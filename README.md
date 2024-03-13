@@ -1,6 +1,8 @@
 # How does the system work?
 This is a __Mechanical Oscillator built in C with 3D printed parts__.
 
+![Mounted System Image](./Mounted%20System.jpg)
+
 The motor is commanded using a PWM-based driver fed with signals obtained using timers (`TCC0` and `TCC1` in this case). This allows to generate oscillations of controllable frequency and peak amplitude that can be changed in real time (because the registers are being directly accessed, without third-party libraries).
 
 The system is based on a Nema17 motor and a custom-designed linear actuator that can be 3D printed: [Nema17 Linear Actuator with Couplings](https://www.thingiverse.com/thing:6530349).
@@ -37,6 +39,7 @@ A Python script `client.py` is provided which automatically connects to the serv
 ## Client loop
 1. When the client connects to the server, it asks for the peak amplitude desired (in `mm`) and the oscillator starts moving with `f=1.0 Hz` and the amplitude set by the client.
 2. The client waits for a new frequency value to be sent to the server (in `Hz`), a new peak amplitue value (sending `A`) or commanding the oscillator to stop at the extremes (sending `X`).
+3. Everytime the frequency or amplitude is changed, the values are stored in a `pandas.DataFrame` with a timestamp for synchronization purposes. This is saved in the file `freqs_amplitudes.csv` when the server is stopped (Ctrl+C) or an error occurs.
 
 # How to change to A4988 Motor Driver?
 The motor can also be controlled using the `A4988` driver. A basic tutorial on this driver can be found in [A4988 Tutorial](https://lastminuteengineers.com/a4988-stepper-motor-driver-arduino-tutorial/). The `MICROSTEPPING` Arduino variable in `Stepper_MKR1000.ino` must be changed to `16`, the maximum microsteps provided by the driver.
