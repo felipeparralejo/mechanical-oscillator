@@ -1,4 +1,3 @@
-import sys
 import socket
 import threading
 from datetime import datetime
@@ -7,7 +6,7 @@ import pandas as pd
 IP = '192.168.1.1' #input("IP MKR1000: ")
 PORT = 23 # telnet
 ADDR = (IP, PORT)
-OUTPUT_FILE = 'freqs_GT.csv'
+OUTPUT_FILE = 'freqs_amplitudes.csv'
 
 print('INSTRUCTIONS')
 print('------------')
@@ -16,6 +15,7 @@ print('-> To set a new frequency, send the value desired')
 print('-> To set a new amplitude value, send "A" and then you will be asked for a new amplitude')
 print('-> To stop the movement at the extremes, send "X" and the motors will stop when the oscillation is')
 print('   at -A, send X again to go to +A, send X again to leave static mode and oscillate with last A and f.')
+print('\n->Save the sync file closing the server with Ctrl+C\n')
 
 df = pd.DataFrame(columns=['Timestamp', 'Amplitude(mm)', 'Freq(Hz)'])
 
@@ -76,7 +76,7 @@ def handle_client():
 
 
 def sendAmplitude():
-    global last_A, last_f
+    global df, last_A, last_f
     a = input('Desired peak Amplitude (mm) = ')
     # Send amplitude
     server.send((a + TERMINATOR_CHAR).encode())
